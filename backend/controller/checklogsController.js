@@ -1,11 +1,11 @@
-const CheckLog = require("../models/CheckLog");
-const Pass = require("../models/Pass");
+const checklogsModel = require("../model/checklogsModel");
+const passModel = require("../model/passModel");
 
 
 exports.checkIn = async (req, res) => {
     try {
 
-      const pass = await Pass.findById(req.params.passId);
+      const pass = await passModel.findById(req.params.passId);
 
       if (!pass)
         return res.status(404).json({ msg: "Pass not found" });
@@ -33,7 +33,7 @@ exports.checkIn = async (req, res) => {
 exports.checkOut = async (req, res) => {
     try {
 
-      const log = await CheckLog.findOne({
+      const log = await checklogsModel.findOne({
         pass: req.params.passId,
         checkOutTime: null
       });
