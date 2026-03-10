@@ -1,13 +1,11 @@
 const express = require("express");
 const {
   dashboardStats
-} = require("../controller/authController");
+} = require("../controller/dashboardController");
 const { auth, permit } = require("../middleware/authMiddleware");
 
 const router = express();
 router.use(express.json());
-
-const { auth, permit } = require("../middleware/auth");
 
 /*
 Route: /dashboard/stats

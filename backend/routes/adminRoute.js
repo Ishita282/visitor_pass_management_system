@@ -21,3 +21,5 @@ router.get(
    auth, permit("admin"),
   getAllUsers,
 );
+
+module.exports = router
