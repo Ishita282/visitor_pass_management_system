@@ -23,14 +23,7 @@ function App() {
             </ProtectedLayout>
           }
         />
-        <Route
-          path="/login"
-          element={
-            <ProtectedLayout>
-              <Login />
-            </ProtectedLayout>
-          }
-        />
+        <Route path="/login" element={<Login />} />
 
         {/* Private */}
         <Route
