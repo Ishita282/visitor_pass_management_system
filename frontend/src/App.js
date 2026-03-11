@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
-import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Visitors from "./pages/Visitor";
 import Appointments from "./pages/Appoinment";
@@ -9,6 +8,7 @@ import Auth from "./utils/Auth";
 import Pass from "./pages/Pass";
 import Scanner from "./pages/Scanner";
 import ProtectedLayout from "./pages/ProtectedLayout";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
             </ProtectedLayout>
           }
         />
-        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Private */}
         <Route

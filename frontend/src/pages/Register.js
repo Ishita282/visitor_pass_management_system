@@ -2,73 +2,64 @@ import { useState } from "react";
 import { API_PUBLIC } from "../service/api";
 import "./style.css";
 
-function Login() {
-
+function Register() {
   const [isSignup, setIsSignup] = useState(false);
 
-  const [name,setName]=useState("");
-  const [role,setRole]=useState("visitor");
-  const [email,setEmail]=useState("");
-  const [password,setPassword]=useState("");
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("visitor");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async (e) => {
-
     e.preventDefault();
 
-    try{
-
-      const res = await API_PUBLIC.post("/auth/login",{
+    try {
+      const res = await API_PUBLIC.post("/register/login", {
         email,
-        password
+        password,
       });
 
-      localStorage.setItem("token",res.data.token);
-      window.location.href="/dashboard";
+      console.log(res);
 
-    }catch{
+      localStorage.setItem("token", res.data.token);
+
+      console.log(res.data.token);
+
+      window.location.href = "/dashboard";
+    } catch {
       alert("Login failed");
     }
-
   };
 
-  const handleSignup = async (e)=>{
-
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-    try{
-
-      const res = await API_PUBLIC.post("/auth/signup",{
+    try {
+      await API_PUBLIC.post("/register/signup", {
         name,
         email,
         password,
-        role
+        role,
       });
-
-      localStorage.setItem("token",res.data.token);
-      window.location.href="/dashboard";
-
-    }catch{
+      window.location.href = "/dashboard";
+    } catch {
       alert("Signup failed");
     }
-
   };
 
   return (
-
     <div className="auth-container">
-
       <h2>{isSignup ? "Signup" : "Login"}</h2>
 
       <form onSubmit={isSignup ? handleSignup : handleLogin}>
-
         {isSignup && (
           <>
             <input
               placeholder="Name"
-              onChange={(e)=>setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
             />
 
-            <select onChange={(e)=>setRole(e.target.value)}>
+            <select onChange={(e) => setRole(e.target.value)}>
               <option value="visitor">Visitor</option>
               <option value="employee">Employee</option>
               <option value="security">Security</option>
@@ -80,34 +71,30 @@ function Login() {
         <input
           type="email"
           placeholder="Email"
-          onChange={(e)=>setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
           placeholder="Password"
-          onChange={(e)=>setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button type="submit">
-          {isSignup ? "Signup" : "Login"}
-        </button>
-
+        <button type="submit">{isSignup ? "Signup" : "Login"}</button>
       </form>
 
       <p>
-
         {isSignup ? "Already have an account?" : "Don't have an account?"}
 
-        <button onClick={()=>setIsSignup(!isSignup)}>
+        <br />
+        <br />
+
+        <button onClick={() => setIsSignup(!isSignup)}>
           {isSignup ? "Login" : "Signup"}
         </button>
-
       </p>
-
     </div>
-
   );
 }
 
-export default Login;
+export default Register;

@@ -1,63 +1,56 @@
 const checklogsModel = require("../model/checklogsModel");
 const passModel = require("../model/passModel");
 
+
 exports.checkIn = async (req, res) => {
-  try {
-    const pass = await passModel.findById(req.params.passId);
+    try {
 
-    if (!pass) {
-      return res.status(404).json({
-        success: false,
-        message: "Pass not found",
+      const pass = await passModel.findById(req.params.passId);
+
+      if (!pass)
+        return res.status(404).json({ msg: "Pass not found" });
+
+      const log = new CheckLog({
+        visitor: pass.visitor,
+        pass: pass._id,
+        checkInTime: new Date(),
+        scannedBy: req.user.id
       });
+
+      await log.save();
+
+      res.json({
+        message: "Visitor checked in",
+        log
+      });
+
+    } catch (error) {
+      res.status(500).json({ msg: "Server error" });
     }
-
-    const log = await checklogsModel.create({
-      visitor: pass.visitor,
-      pass: pass._id,
-      checkInTime: new Date(),
-      scannedBy: req.user.id,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Visitor checked in",
-      log,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Server error",
-      error: error.message,
-    });
   }
-};
+
 
 exports.checkOut = async (req, res) => {
-  try {
-    const log = await checklogsModel.findOne({
-      pass: req.params.passId,
-      checkOutTime: null,
-    });
+    try {
 
-    if (!log) {
-      return res.status(404).json({
-        success: false,
-        message: "Check-in record not found",
+      const log = await checklogsModel.findOne({
+        pass: req.params.passId,
+        checkOutTime: null
       });
+
+      if (!log)
+        return res.status(404).json({ msg: "Check-in record not found" });
+
+      log.checkOutTime = new Date();
+
+      await log.save();
+
+      res.json({
+        message: "Visitor checked out",
+        log
+      });
+
+    } catch (error) {
+      res.status(500).json({ msg: "Server error" });
     }
-
-    log.checkOutTime = new Date();
-    await log.save();
-
-    res.status(200).json({
-      success: true,
-      message: "Visitor checked out",
-      log,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Server error",
-      error: error.message,
-    });
   }
-};
