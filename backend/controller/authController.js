@@ -95,12 +95,4 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.onlyAdminDashboard = (req, res) => {
-  res.send("Welcome admin");
-};
-
-exports.employeeDashboard = (req, res) => {
-  res.send("Welcome Employee");
-};
-
 

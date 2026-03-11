@@ -1,5 +1,6 @@
 const express = require("express");
 require('dotenv').config();
+const cors = require("cors")
 const dbConnection = require("./config/db");
 const authRoutes = require("./routes/authRoute");
 const admin = require("./routes/adminRoute");
@@ -14,6 +15,11 @@ dbConnection();
 const app = express();
 
 app.use(express.json());
+
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 
 app.use((req, res, next) => {
   console.log(`Request received: ${req.method} ${req.url}`);

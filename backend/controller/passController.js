@@ -1,9 +1,12 @@
 const passModel = require("../model/passModel");
 const appoinmentModel = require("../model/appoinmentModel");
+const QRCode = require("qrcode");
+const PDFDocument = require("pdfkit");
+
 
 exports.qrPassGenerator = async (req, res) => {
   try {
-    const appointment = await Appointment.findById(req.params.appointmentId)
+    const appointment = await appoinmentModel.findById(req.params.appointmentId)
       .populate("visitor")
       .populate("host");
 
@@ -18,7 +21,7 @@ exports.qrPassGenerator = async (req, res) => {
 
     const qrCode = await QRCode.toDataURL(qrData);
 
-    const pass = new Pass({
+    const pass = new passModel({
       appointment: appointment._id,
       visitor: appointment.visitor._id,
       qrCode: qrCode,

@@ -60,7 +60,7 @@ exports.getAllVisitors = async (req, res) => {
 };
 
 exports.getVisitorsById = async (req, res) => {
-  const { _id } = req.id;
+  const { _id } = req._id;
   if (!_id) {
     res.status(400).json({
       success: false,
@@ -89,27 +89,7 @@ exports.getVisitorsById = async (req, res) => {
 };
 
 // exports.updateVisitorsById = async (req, res) => {
-//   const allVisitors = await visitorModel.find();
-//   if (allVisitors.length === 0 || !allVisitors)
-//     return res.status(400).json({
-//       msg: "Empty: No visitor in the system",
-//     });
-
-//   res.status(200).json({
-//     success: true,
-//     visitors: allVisitors,
-//   });
 // };
 
 // exports.deleteVisitorsById = async (req, res) => {
-//   const allVisitors = await visitorModel.find();
-//   if (allVisitors.length === 0 || !allVisitors)
-//     return res.status(400).json({
-//       msg: "Empty: No visitor in the system",
-//     });
-
-//   res.status(200).json({
-//     success: true,
-//     visitors: allVisitors,
-//   });
 // };

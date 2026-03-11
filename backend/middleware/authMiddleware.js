@@ -6,7 +6,7 @@ if (!process.env.JWT_TOKEN) {
 }
 
 exports.auth = (req, res, next) => {
-  const authHeader = req.header("Authorization");
+  const authHeader = req.header("x-auth-token");
   if (!authHeader)
     return res.status(401).json({
       msg: "No Token, authorization denied",

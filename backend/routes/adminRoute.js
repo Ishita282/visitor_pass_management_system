@@ -18,7 +18,7 @@ Parameter: none
 
 router.get(
   "/all",
-   auth, permit("admin"),
+  //  auth, permit("admin"),
   getAllUsers,
 );
 

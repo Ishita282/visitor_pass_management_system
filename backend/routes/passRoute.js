@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const QRCode = require("qrcode");
-const PDFDocument = require("pdfkit");
 const { qrPassGenerator } = require("../controller/passController");
 const { auth, permit } = require("../middleware/authMiddleware");
 

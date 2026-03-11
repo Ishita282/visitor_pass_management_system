@@ -9,7 +9,7 @@ const router = express();
 router.use(express.json());
 
 /*
-Route: /signup
+Route: /register/signup
 Method: POST
 Description: Signup the User
 Access: Public
@@ -30,9 +30,9 @@ router.post(
 );
 
 /*
-Route: /signup
+Route: /register/login
 Method: POST
-Description: Signup the User
+Description: Login the User
 Access: Public
 Parameter: none
 */
