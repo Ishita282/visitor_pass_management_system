@@ -1,54 +1,59 @@
 import { useState } from "react";
 import { QrReader } from "react-qr-reader";
-import {API_AUTH} from "../service/api";
-import "./style.css"
+import { API_AUTH } from "../service/api";
 
+function Scanner(){
 
-function Scanner() {
-  const [result, setResult] = useState("");
-  const [message, setMessage] = useState("");
+const [result,setResult]=useState("");
+const [message,setMessage]=useState("");
 
-  const handleScan = async (data) => {
-    if (data) {
-      const passId = data?.text;
+const handleScan = async(data)=>{
 
-      setResult(passId);
+if(!data) return;
 
-      try {
-        const res = await API_AUTH.post(`/checklogs/checkin/${passId}`);
+const passId = data?.text || data;
 
-        setMessage(res.data.message);
-      } catch (err) {
-        try {
-          const res = await API_AUTH.post(`/checklogs/checkout/${passId}`);
+setResult(passId);
 
-          setMessage(res.data.message);
-        } catch {
-          setMessage("Invalid QR Code");
-        }
-      }
-    }
-  };
+try{
 
-  return (
-    <div>
-      <h1>Security QR Scanner</h1>
+const res = await API_AUTH.post(`/checklogs/checkin/${passId}`);
+setMessage(res.data.message);
 
-      <QrReader
-        constraints={{ facingMode: "environment" }}
-        onResult={(result, error) => {
-          if (!!result) {
-            handleScan(result);
-          }
-        }}
-        style={{ width: "300px" }}
-      />
+}catch{
 
-      <h3>Scanned Pass ID: {result}</h3>
+try{
 
-      <h2>{message}</h2>
-    </div>
-  );
+const res = await API_AUTH.post(`/checklogs/checkout/${passId}`);
+setMessage(res.data.message);
+
+}catch{
+setMessage("Invalid QR Code");
+}
+
+}
+
+};
+
+return(
+
+<div>
+
+<h1>Security QR Scanner</h1>
+
+<QrReader
+constraints={{facingMode:"environment"}}
+onResult={(result)=>{ if(result) handleScan(result)}}
+/>
+
+<h3>Scanned Pass ID: {result}</h3>
+
+<h2>{message}</h2>
+
+</div>
+
+);
+
 }
 
 export default Scanner;

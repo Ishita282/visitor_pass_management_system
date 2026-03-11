@@ -1,39 +1,55 @@
 const passModel = require("../model/passModel");
 const appoinmentModel = require("../model/appoinmentModel");
 const QRCode = require("qrcode");
-const PDFDocument = require("pdfkit");
-
 
 exports.qrPassGenerator = async (req, res) => {
   try {
-    const appointment = await appoinmentModel.findById(req.params.appointmentId)
+
+    const appointment = await appoinmentModel
+      .findById(req.params.appointmentId)
       .populate("visitor")
       .populate("host");
 
-    if (!appointment)
-      return res.status(404).json({ msg: "Appointment not found" });
+    if (!appointment) {
+      return res.status(404).json({
+        success: false,
+        message: "Appointment not found",
+      });
+    }
 
-    if (appointment.status !== "approved")
-      return res.status(400).json({ msg: "Appointment not approved" });
+    if (appointment.status !== "approved") {
+      return res.status(400).json({
+        success: false,
+        message: "Appointment must be approved first",
+      });
+    }
 
-    // QR DATA
-    const qrData = `visitor:${appointment.visitor._id}`;
+    const qrData = JSON.stringify({
+      visitorId: appointment.visitor._id,
+      appointmentId: appointment._id,
+    });
 
     const qrCode = await QRCode.toDataURL(qrData);
 
-    const pass = new passModel({
+    const pass = await passModel.create({
       appointment: appointment._id,
       visitor: appointment.visitor._id,
-      qrCode: qrCode,
+      qrCode,
     });
 
-    await pass.save();
-
-    res.json({
-      message: "Pass generated",
+    res.status(201).json({
+      success: true,
+      message: "Pass generated successfully",
       pass,
     });
+
   } catch (error) {
-    res.status(500).json({ msg: "Server error" });
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+
   }
 };

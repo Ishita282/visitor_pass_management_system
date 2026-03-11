@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { API_AUTH  } from "../service/api";
+import { API_AUTH } from "../service/api";
 import "./style.css";
 
 function Appointments() {
+
   const [appointments, setAppointments] = useState([]);
   const [visitors, setVisitors] = useState([]);
   const [form, setForm] = useState({
     visitorId: "",
     hostId: "",
-    date: "",
+    date: ""
   });
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -20,22 +22,20 @@ function Appointments() {
   const fetchVisitors = async () => {
     try {
       const res = await API_AUTH.get("/visitors");
-      console.log("Visitors:", res.data);
-      setVisitors(Array.isArray(res.data) ? res.data : res.data.visitors || []);
-    } catch (err) {
-      console.error("Error fetching visitors:", err);
-      alert("Failed to load visitors.");
+      setVisitors(res.data.visitors || []);
+    } catch (error) {
+      console.log(error);
+      alert("Failed to load visitors");
     }
   };
 
   const fetchAppointments = async () => {
     try {
       const res = await API_AUTH.get("/appointments");
-      console.log("Appointments:", res.data);
-      setAppointments(Array.isArray(res.data) ? res.data : res.data.appointments || []);
-    } catch (err) {
-      console.error("Error fetching appointments:", err);
-      alert("Failed to load appointments.");
+      setAppointments(res.data.appointments || []);
+    } catch (error) {
+      console.log(error);
+      alert("Failed to load appointments");
     }
   };
 
@@ -52,17 +52,21 @@ function Appointments() {
     }
 
     setLoading(true);
-    try {
-      const res = await API_AUTH.post("/appointments", form);
-      console.log("Appointment created:", res.data);
 
+    try {
+      await API_AUTH.post("/appointments", form);
       fetchAppointments();
 
-      setForm({ visitorId: "", hostId: "", date: "" });
-    } catch (err) {
-      console.error("Error creating appointment:", err);
-      alert(err.response?.data?.message || "Failed to create appointment");
+      setForm({
+        visitorId: "",
+        hostId: "",
+        date: ""
+      });
+
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to create appointment");
     }
+
     setLoading(false);
   };
 
@@ -70,9 +74,8 @@ function Appointments() {
     try {
       await API_AUTH.patch(`/appointments/${id}/status`, { status });
       fetchAppointments();
-    } catch (err) {
-      console.error(`Failed to ${status} appointment:`, err);
-      alert(`Failed to ${status} appointment`);
+    } catch {
+      alert("Failed to update appointment status");
     }
   };
 
@@ -81,11 +84,20 @@ function Appointments() {
       <h1>Appointments</h1>
 
       <form onSubmit={handleSubmit} className="form">
-        <select name="visitorId" value={form.visitorId} onChange={handleChange}>
+
+        <select
+          name="visitorId"
+          value={form.visitorId}
+          onChange={handleChange}
+        >
           <option value="">Select Visitor</option>
-          {Array.isArray(visitors) && visitors.map((v) => (
-            <option key={v._id} value={v._id}>{v.name}</option>
+
+          {visitors.map(v => (
+            <option key={v._id} value={v._id}>
+              {v.name}
+            </option>
           ))}
+
         </select>
 
         <input
@@ -103,31 +115,39 @@ function Appointments() {
           onChange={handleChange}
         />
 
-        <button type="submit" disabled={loading}>
+        <button disabled={loading}>
           {loading ? "Creating..." : "Create Appointment"}
         </button>
+
       </form>
 
-     
       <h2>Appointment List</h2>
-      {Array.isArray(appointments) && appointments.length > 0 ? (
-        appointments.map((a) => (
-          <div className="card" key={a._id}>
-            <p><strong>Visitor:</strong> {a.visitor?.name || "Unknown"}</p>
-            <p><strong>Host:</strong> {a.host?.name || a.hostId}</p>
-            <p><strong>Status:</strong> {a.status}</p>
 
-            {a.status === "pending" && (
-              <>
-                <button onClick={() => updateStatus(a._id, "approved")}>Approve</button>
-                <button onClick={() => updateStatus(a._id, "rejected")}>Reject</button>
-              </>
-            )}
-          </div>
-        ))
-      ) : (
-        <p>No appointments found.</p>
-      )}
+      {appointments.length === 0 && <p>No appointments found</p>}
+
+      {appointments.map(a => (
+
+        <div className="card" key={a._id}>
+
+          <p><b>Visitor:</b> {a.visitor?.name}</p>
+          <p><b>Host:</b> {a.host?.name}</p>
+          <p><b>Status:</b> {a.status}</p>
+
+          {a.status === "pending" && (
+            <>
+              <button onClick={() => updateStatus(a._id, "approved")}>
+                Approve
+              </button>
+
+              <button onClick={() => updateStatus(a._id, "rejected")}>
+                Reject
+              </button>
+            </>
+          )}
+
+        </div>
+      ))}
+
     </div>
   );
 }

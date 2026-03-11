@@ -1,46 +1,64 @@
 import { useState } from "react";
 import { API_AUTH } from "../service/api";
 import { QRCodeCanvas } from "qrcode.react";
-import "./style.css"
 
+function Pass(){
 
-function Pass() {
-  const [appointmentId, setAppointmentId] = useState("");
-  const [pass, setPass] = useState(null);
+const [appointmentId,setAppointmentId]=useState("");
+const [pass,setPass]=useState(null);
 
-  const generatePass = async (e) => {
-    e.preventDefault();
+const generatePass = async(e)=>{
 
-    const res = await API_AUTH.post(`/pass/generate/${appointmentId}`);
+e.preventDefault();
 
-    setPass(res.data.pass);
-  };
+try{
 
-  return (
-    <div>
-      <h1>Generate Visitor Pass</h1>
+const res = await API_AUTH.post(`/pass/generate/${appointmentId}`);
 
-      <form onSubmit={generatePass}>
-        <input
-          placeholder="Appointment ID"
-          value={appointmentId}
-          onChange={(e) => setAppointmentId(e.target.value)}
-        />
+setPass(res.data.pass);
 
-        <button type="submit">Generate Pass</button>
-      </form>
+}catch{
+alert("Failed to generate pass");
+}
 
-      {pass && (
-        <div className="qr-box">
-          <h2>Visitor QR Pass</h2>
+};
 
-          <QRCodeCanvas value={pass._id} size={200} />
+return(
 
-          <p>Pass ID: {pass._id}</p>
-        </div>
-      )}
-    </div>
-  );
+<div>
+
+<h1>Generate Visitor Pass</h1>
+
+<form onSubmit={generatePass}>
+
+<input
+placeholder="Appointment ID"
+value={appointmentId}
+onChange={(e)=>setAppointmentId(e.target.value)}
+/>
+
+<button>Generate Pass</button>
+
+</form>
+
+{pass && (
+
+<div>
+
+<h2>Visitor QR Pass</h2>
+
+<QRCodeCanvas value={pass._id} size={200}/>
+
+<p>Pass ID: {pass._id}</p>
+
+</div>
+
+)}
+
+</div>
+
+);
+
 }
 
 export default Pass;

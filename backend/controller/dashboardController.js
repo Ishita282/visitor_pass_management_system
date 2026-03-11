@@ -1,41 +1,47 @@
 const checklogsModel = require("../model/checklogsModel");
 const appoinmentModel = require("../model/appoinmentModel");
 
-
 exports.dashboardStats = async (req, res) => {
-    try {
+  try {
 
-      const today = new Date();
-      today.setHours(0,0,0,0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-      //description: visitors checked in today
-      const totalVisitors = await checklogsModel.countDocuments({
-        checkInTime: { $gte: today }
-      });
+    // Visitors checked in today
+    const totalVisitors = await checklogsModel.countDocuments({
+      checkInTime: { $gte: today },
+    });
 
-      //description: visitors still inside
-      const activeVisitors = await checklogsModel.countDocuments({
-        checkOutTime: null
-      });
+    // Visitors currently inside building
+    const activeVisitors = await checklogsModel.countDocuments({
+      checkOutTime: null,
+    });
 
-      //description: visitors who left
-      const checkedOut = await checklogsModel.countDocuments({
-        checkOutTime: { $ne: null }
-      });
+    // Visitors who already checked out
+    const checkedOut = await checklogsModel.countDocuments({
+      checkOutTime: { $ne: null },
+    });
 
-      //description: pending appointments
-      const pendingAppointments = await appoinmentModel.countDocuments({
-        status: "pending"
-      });
+    // Pending appointments
+    const pendingAppointments = await appoinmentModel.countDocuments({
+      status: "pending",
+    });
 
-      res.json({
-        totalVisitors,
-        activeVisitors,
-        checkedOut,
-        pendingAppointments
-      });
+    res.status(200).json({
+      success: true,
+      totalVisitors,
+      activeVisitors,
+      checkedOut,
+      pendingAppointments,
+    });
 
-    } catch (error) {
-      res.status(500).json({ msg: "Server error" });
-    }
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+
   }
+};

@@ -1,43 +1,56 @@
 const jwt = require("jsonwebtoken");
 
 const jwt_secret = process.env.JWT_TOKEN;
-if (!process.env.JWT_TOKEN) {
-  throw new Error("JWT_TOKEN is not defined in .env!");
-}
 
 exports.auth = (req, res, next) => {
-  const authHeader = req.header("x-auth-token");
-  if (!authHeader)
-    return res.status(401).json({
-      msg: "No Token, authorization denied",
-    });
 
-  // If using 'Bearer <token>' format
-  const token = authHeader.startsWith("Bearer ")
-    ? authHeader.slice(7).trim()
-    : authHeader;
+  const header = req.headers["x-auth-token"];
+
+  if (!header) {
+    return res.status(401).json({
+      message: "No token provided",
+    });
+  }
+
+  const token = header.startsWith("Bearer ")
+    ? header.slice(7).trim()
+    : header;
 
   try {
+
     const decoded = jwt.verify(token, jwt_secret);
+
     req.user = decoded;
 
     next();
+
   } catch (error) {
-    res.status(401).json({
-      msg: "Token is not valid",
-      error: error.message,
+
+    return res.status(401).json({
+      message: "Invalid token",
     });
+
   }
 };
 
-exports.permit = (...allowedRoles) => {
+exports.permit = (...roles) => {
+
   return (req, res, next) => {
+
     if (!req.user) {
-      return res.status(401).json({ msg: "User is unauthorized" });
-    } else if (allowedRoles.includes(req.user.role)) {
-      next();
-    } else {
-      return res.status(403).json({ msg: "Access denied" });
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
     }
+
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: "Access denied",
+      });
+    }
+
+    next();
+
   };
+
 };
