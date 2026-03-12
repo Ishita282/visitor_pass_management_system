@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { checkIn, checkOut } = require("../controller/checklogsController");
 const { auth, permit } = require("../middleware/authMiddleware");
+const { body, param } = require("express-validator");
+const { validate } = require("../middleware/validator");
 
 /*
 Route: /checklogs/checkin/{passId}
@@ -11,7 +13,15 @@ Access: security, admin
 Parameter: passId
 */
 
-router.post("/checkin/:passId", auth, permit("security", "admin"), checkIn);
+router.post(
+  "/checkin/:passId",
+  auth,
+  permit("security", "admin"),
+  [param("passId").notEmpty().withMessage("Pass ID required")],
+  validate,
+  checkIn
+);
+
 
 /*
 Route: /checklogs/checkout/{passId}
@@ -21,6 +31,13 @@ Access: security, admin
 Parameter: passId
 */
 
-router.post("/checkout/:passId", auth, permit("security", "admin"), checkOut);
+router.post(
+  "/checkout/:passId",
+  auth,
+  permit("security", "admin"),
+  [param("passId").notEmpty().withMessage("Pass ID required")],
+  validate,
+  checkOut
+);
 
 module.exports = router;

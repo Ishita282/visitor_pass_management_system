@@ -2,158 +2,185 @@
 
 ## Project Overview
 
-I developed a **Visitor Pass Management System** using the MERN stack (MongoDB, Express.js, React, and Node.js).
-The goal of this project is to digitize the traditional visitor register system used in offices, institutions, and organizations.
+This project is a **Visitor Pass Management System** built using the **MERN stack (MongoDB, Express.js, React, Node.js)**.
 
-Instead of maintaining manual entry logs, this system allows organizations to manage visitors digitally. Visitors can pre-register, hosts can approve appointments, and security personnel can verify entries using QR-code-based passes.
+The purpose of this system is to replace traditional manual visitor registers used in offices, institutions, and organizations with a **digital visitor management system**.
 
-The system improves **security, efficiency, and record management** by providing digital visitor passes, QR code verification, and centralized dashboards for monitoring visitor activity.
+Visitors can pre-register, employees can approve appointments, and security staff can verify entries using **QR code based passes**.
 
-### Key Features
+The system improves **security, efficiency, and record tracking** by providing digital visitor passes, QR verification, automated logging, and centralized dashboards.
 
-* Role-based authentication using JWT
-* Visitor pre-registration
+---
+
+# Features
+
+* Role-based authentication using **JWT**
+* Visitor registration with personal details and photo
 * Appointment scheduling and approval
-* QR code based visitor passes
-* Check-in and check-out logging
-* Dashboard for managing visitors and reports
-* Email notifications for appointment and pass updates
+* QR code based visitor pass generation
+* PDF visitor badge generation
+* Visitor check-in and check-out tracking
+* Dashboard with visitor statistics
+* Email notifications for appointments and passes
+* Search, filter, and export visitor logs
 
 ---
 
 # Tech Stack
 
-### Frontend
+## Frontend
 
 * React
 * React Router
-* HTML, CSS, JavaScript
+* Axios
+* HTML / CSS / JavaScript
 
-### Backend
+## Backend
 
 * Node.js
 * Express.js
 * JWT Authentication
+* Nodemailer
 
-### Database
+## Database
 
-* MongoDB
+* MongoDB (MongoDB Atlas)
 
-### Additional Tools
+## Additional Tools
 
 * QR Code generation
-* PDF pass generation
+* PDFKit for pass generation
+* Email notifications
 
 ---
 
 # Deployment
 
-The project is deployed online so users can access it without running it locally.
+The project is deployed using cloud services.
 
-* The **frontend application** is deployed using **Vercel**.
-* The **backend API** is deployed using **Render**.
-* The **database** is hosted on **MongoDB Atlas**.
+Frontend: **Vercel**
+Backend API: **Render**
+Database: **MongoDB Atlas**
 
-This setup allows the application to run as a full-stack cloud-hosted system.
+Live Project:
 
----
-
-# Live Demo
-
-Live Project Link:
-`https://visitor-pass-management-system.vercel.app/`
+https://visitor-pass-management-system.vercel.app/
 
 API Base URL:
-`https://visitor-pass-management-system-wnl4.onrender.com`
 
-You can use the demo accounts below to test the application:
+https://visitor-pass-management-system-wnl4.onrender.com
+
+---
+
+# Demo Accounts
+
+You can test the system using the following demo accounts.
 
 Admin
-Email: `admin@example.com`
-Password: `password123`
+Email: [admin@example.com](mailto:admin@example.com)
+Password: password123
 
 Security
-Email: `security@example.com`
-Password: `password123`
+Email: [security@example.com](mailto:security@example.com)
+Password: password123
 
 Employee
-Email: `employee@example.com`
-Password: `password123`
+Email: [employee@example.com](mailto:employee@example.com)
+Password: password123
 
 ---
 
-# GitHub Repository
+# Prerequisites
 
-Source code for this project is available on GitHub.
+Before running this project locally, make sure you have installed:
 
-Repository Link:
-`https://github.com/Ishita282/visitor_pass_management_system`
+* Node.js (version 16 or higher)
+* npm or yarn
+* MongoDB Atlas account or local MongoDB
+* Git
+
+Check installation:
+
+```
+node -v
+npm -v
+```
 
 ---
 
-# How to Clone the Project
+# Clone the Repository
 
-To run this project locally, first clone the repository from GitHub.
-
-```bash
+```
 git clone https://github.com/Ishita282/visitor_pass_management_system
 ```
 
-Then move into the project folder:
+Move into the project directory:
 
-```bash
-cd visitor-pass-management-system
 ```
-
----
-
-# Project Setup Instructions
-
-## 1. Install Dependencies
-
-### Backend
-
-Navigate to the backend folder and install dependencies.
-
-```bash
-cd backend
-npm install
-```
-
-### Frontend
-
-Open a new terminal and install frontend dependencies.
-
-```bash
-cd frontend
-npm install
+cd visitor_pass_management_system
 ```
 
 ---
 
 # Environment Variables
 
-Create a `.env` file inside the **backend folder** and add the following variables.
+Create a `.env` file inside the **backend folder**.
+
+Example:
 
 ```
 PORT=4000
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+JWT_SECRET=your_secret_key
 BASE_URL=http://localhost:4000
+
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_email_app_password
+```
+
+Explanation:
+
+| Variable   | Description                          |
+| ---------- | ------------------------------------ |
+| PORT       | Backend server port                  |
+| MONGO_URI  | MongoDB database connection          |
+| JWT_SECRET | Secret key for JWT authentication    |
+| BASE_URL   | Base API URL                         |
+| EMAIL_USER | Gmail account used for notifications |
+| EMAIL_PASS | Gmail app password                   |
+
+---
+
+# Installation
+
+## Install Backend Dependencies
+
+```
+cd backend
+npm install
+```
+
+## Install Frontend Dependencies
+
+Open another terminal.
+
+```
+cd frontend
+npm install
 ```
 
 ---
 
-# Running the Project
+# Running the Application
 
 ## Start Backend Server
 
-```bash
+```
 cd backend
 npm start
 ```
 
-The backend server will run on:
+Server runs at:
 
 ```
 http://localhost:4000
@@ -161,14 +188,14 @@ http://localhost:4000
 
 ---
 
-## Start Frontend Application
+## Start Frontend
 
-```bash
+```
 cd frontend
 npm start
 ```
 
-The React application will run on:
+Frontend runs at:
 
 ```
 http://localhost:3000
@@ -176,22 +203,167 @@ http://localhost:3000
 
 ---
 
+# API Endpoints
+
+## Authentication
+
+POST /api/auth/register
+Register a new user.
+
+POST /api/auth/login
+Login user and return JWT token.
+
+---
+
+## Visitors
+
+POST /api/visitors
+Create a new visitor.
+
+GET /api/visitors
+Get all visitors.
+
+GET /api/visitors/:id
+Get visitor by ID.
+
+---
+
+## Appointments
+
+POST /api/appointments
+Create appointment.
+
+GET /api/appointments
+Get all appointments.
+
+PUT /api/appointments/:id/status
+Approve or reject appointment.
+
+---
+
+## Pass Management
+
+POST /api/pass/generate/:appointmentId
+Generate visitor pass with QR code and PDF badge.
+
+---
+
+## Check Logs
+
+POST /api/checkin/:passId
+Check-in visitor.
+
+POST /api/checkout/:passId
+Check-out visitor.
+
+GET /api/checklogs
+Get all check logs.
+
+---
+
+## Dashboard
+
+GET /api/dashboard/stats
+Get visitor statistics.
+
+GET /api/dashboard/search
+Search and filter visitor logs.
+
+GET /api/dashboard/export
+Export visitor logs (CSV / JSON).
+
+---
+
+# Database Schema
+
+The system uses the following MongoDB collections.
+
+## Users
+
+Stores system users (Admin, Security, Employee).
+
+Fields:
+
+* name
+* email
+* password
+* role
+
+---
+
+## Visitors
+
+Stores visitor information.
+
+Fields:
+
+* name
+* email
+* phone
+* purpose
+* photo
+
+---
+
+## Appointments
+
+Stores appointment requests between visitors and hosts.
+
+Fields:
+
+* visitor (reference)
+* host (reference)
+* date
+* status
+
+---
+
+## Passes
+
+Stores generated visitor passes.
+
+Fields:
+
+* visitor
+* appointment
+* qrCode
+* createdAt
+
+---
+
+## CheckLogs
+
+Tracks visitor entry and exit.
+
+Fields:
+
+* visitor
+* pass
+* checkInTime
+* checkOutTime
+
+---
+
 # Project Structure
 
 ```
-visitor-pass-management-system
+visitor_pass_management_system
 │
 ├── backend
 │   ├── controllers
 │   ├── models
 │   ├── routes
 │   ├── middleware
+│   ├── utils
 │   └── server.js
 │
 ├── frontend
 │   ├── src
-│   ├── components
-│   ├── pages
+│   │   ├── components
+│   │   ├── pages
+│   │   ├── services
+│   │   └── utils
+│   │
 │   └── App.js
 │
 └── README.md
@@ -201,18 +373,20 @@ visitor-pass-management-system
 
 # Future Improvements
 
-Some features that can be added in future versions:
+Possible improvements for future versions:
 
 * OTP-based visitor verification
 * Multi-organization support
 * Advanced analytics dashboard
-* Export visitor reports
-* Mobile-friendly interface
+* Mobile responsive UI
+* Role-based dashboard views
 
 ---
 
 # Conclusion
 
-This project demonstrates the implementation of a full-stack web application using the MERN stack. It showcases authentication, role-based access control, QR-code integration, and digital visitor pass management.
+This project demonstrates a complete **MERN stack application** implementing authentication, visitor management, QR code generation, and digital pass verification.
 
-The system can be used by organizations to modernize their visitor management process and maintain secure digital records.
+The system helps organizations modernize their visitor management process by replacing manual registers with a secure and scalable digital platform.
+
+---

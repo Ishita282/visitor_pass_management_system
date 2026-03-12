@@ -30,10 +30,10 @@ const visitorModel = new Schema(
     },
     createdAt: {
       type: Date,
-      defalut: Date.now,
+      default: Date.now,
     },
   },
-  { timestamp: true },
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Visitor", visitorModel)

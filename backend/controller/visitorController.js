@@ -60,8 +60,8 @@ exports.getAllVisitors = async (req, res) => {
 };
 
 exports.getVisitorsById = async (req, res) => {
-  const { _id } = req._id;
-  if (!_id) {
+  const { id } = req.params;
+  if (!id) {
     res.status(400).json({
       success: false,
       msg: `id: ${id} doesn't present`,
@@ -69,7 +69,7 @@ exports.getVisitorsById = async (req, res) => {
   }
 
   try {
-    const visitor = await visitorModel.findById(_id);
+    const visitor = await visitorModel.findById(id);
     if (!visitor)
       return res.status(400).json({
         msg: `Visitor doesn't present with id: ${id}`,
@@ -88,8 +88,73 @@ exports.getVisitorsById = async (req, res) => {
   }
 };
 
-// exports.updateVisitorsById = async (req, res) => {
-// };
+exports.updateVisitorsById = async (req, res) => {
+  const { id } = req.params;
 
-// exports.deleteVisitorsById = async (req, res) => {
-// };
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      msg: `Visitor id is required`,
+    });
+  }
+
+  try {
+    const updatedVisitor = await visitorModel.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedVisitor) {
+      return res.status(404).json({
+        success: false,
+        msg: `Visitor not found with id: ${id}`,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      msg: "Visitor updated successfully",
+      visitor: updatedVisitor,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      msg: "Server Error",
+      error: error.message,
+    });
+  }
+};
+
+exports.deleteVisitorsById = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      msg: "Visitor id is required",
+    });
+  }
+
+  try {
+    const deletedVisitor = await visitorModel.findByIdAndDelete(id);
+
+    if (!deletedVisitor) {
+      return res.status(404).json({
+        success: false,
+        msg: `Visitor not found with id: ${id}`,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      msg: "Visitor deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      msg: "Server Error",
+      error: error.message,
+    });
+  }
+};

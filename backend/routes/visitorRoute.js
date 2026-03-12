@@ -3,10 +3,12 @@ const {
   createVisitor,
   getAllVisitors,
   getVisitorsById,
-  //   updateVisitorsById,
-  //   deleteVisitorsById,
+  updateVisitorsById,
+  deleteVisitorsById,
 } = require("../controller/visitorController");
 const { auth, permit } = require("../middleware/authMiddleware");
+const { body, param } = require("express-validator");
+const { validate } = require("../middleware/validator");
 
 const router = express();
 router.use(express.json());
@@ -19,8 +21,19 @@ Access: PUBLIC
 Parameter: none
 */
 
-router.post("/", createVisitor);
+const { body } = require("express-validator");
+const { validate } = require("../middleware/validator");
 
+router.post(
+  "/",
+  [
+    body("name").notEmpty().withMessage("Name required"),
+    body("email").isEmail().withMessage("Valid email required"),
+    body("phone").notEmpty().withMessage("Phone required"),
+  ],
+  validate,
+  createVisitor
+);
 /*
 Route: /visitors
 Method: GET
@@ -49,7 +62,7 @@ Access: VISITOR
 Parameter: id
 */
 
-// router.put("/:id", updateVisitorsById);
+router.put("/:id", auth, permit("admin", "security"), updateVisitorsById);
 
 /*
 Route: /visitors/{id}
@@ -59,6 +72,6 @@ Access: PUBLIC
 Parameter: id
 */
 
-// router.delete("/:id", deleteVisitorsById);
+router.delete("/:id", auth, permit("admin", "security"), deleteVisitorsById);
 
 module.exports = router;

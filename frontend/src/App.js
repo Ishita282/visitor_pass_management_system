@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Visitors from "./pages/Visitor";
-import Appointments from "./pages/Appoinment";
+import Appointments from "./pages/Appointment";
 import Auth from "./utils/Auth";
 import Pass from "./pages/Pass";
 import Scanner from "./pages/Scanner";

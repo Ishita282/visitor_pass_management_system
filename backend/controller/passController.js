@@ -1,39 +1,84 @@
 const passModel = require("../model/passModel");
-const appoinmentModel = require("../model/appoinmentModel");
+const appointmentModel = require("../model/appointmentModel");
+const notification = require("./notificationController");
 const QRCode = require("qrcode");
 const PDFDocument = require("pdfkit");
 
-
-exports.qrPassGenerator = async (req, res) => {
+exports.generateBadge = async (req, res) => {
   try {
-    const appointment = await appoinmentModel.findById(req.params.appointmentId)
+
+    const appointment = await appointmentModel
+      .findById(req.params.appointmentId)
       .populate("visitor")
       .populate("host");
 
-    if (!appointment)
-      return res.status(404).json({ msg: "Appointment not found" });
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
 
-    if (appointment.status !== "approved")
-      return res.status(400).json({ msg: "Appointment not approved" });
+    const visitor = appointment.visitor;
 
-    // QR DATA
-    const qrData = `visitor:${appointment.visitor._id}`;
-
-    const qrCode = await QRCode.toDataURL(qrData);
+    const qrCode = await QRCode.toDataURL(visitor._id.toString());
 
     const pass = new passModel({
       appointment: appointment._id,
-      visitor: appointment.visitor._id,
+      visitor: visitor._id,
       qrCode: qrCode,
     });
 
     await pass.save();
 
-    res.json({
-      message: "Pass generated",
-      pass,
+    await notification.passGenerated(
+      visitor.email,
+      visitor.name,
+      pass._id
+    );
+
+    const doc = new PDFDocument();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=visitor-pass.pdf"
+    );
+
+    doc.pipe(res);
+
+    doc.fontSize(20).text("Visitor Pass", { align: "center" });
+
+    doc.moveDown();
+
+    if (visitor.photo) {
+      doc.image(visitor.photo, {
+        fit: [100, 100],
+        align: "center",
+      });
+    }
+
+    doc.moveDown();
+
+    doc.fontSize(12);
+    doc.text(`Name: ${visitor.name}`);
+    doc.text(`Email: ${visitor.email}`);
+    doc.text(`Phone: ${visitor.phone}`);
+    doc.text(`Host: ${appointment.host.name}`);
+
+    doc.moveDown();
+
+    const qrImage = qrCode.replace(/^data:image\/png;base64,/, "");
+    const qrBuffer = Buffer.from(qrImage, "base64");
+
+    doc.image(qrBuffer, {
+      fit: [120, 120],
+      align: "center",
     });
+
+    doc.end();
+
   } catch (error) {
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 };

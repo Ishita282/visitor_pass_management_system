@@ -3,7 +3,8 @@ const {
   signup,
   login
 } = require("../controller/authController");
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
+const { validate } = require("../middleware/validator");
 
 const router = express();
 router.use(express.json());
@@ -26,7 +27,8 @@ router.post(
       .withMessage("Password must be at least 8 characters"),
     body("role").optional().isIn(["visitor", "admin", "security", "employee"]),
   ],
-  signup,
+  validate,
+  signup
 );
 
 /*
@@ -43,6 +45,7 @@ router.post(
     body("email").isEmail().withMessage("Valid email required"),
     body("password").exists(),
   ],
+  validate,
   login,
 );
 

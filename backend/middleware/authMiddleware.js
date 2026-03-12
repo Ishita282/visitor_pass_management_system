@@ -1,10 +1,5 @@
 const jwt = require("jsonwebtoken");
 
-const jwt_secret = process.env.JWT_TOKEN;
-if (!process.env.JWT_TOKEN) {
-  throw new Error("JWT_TOKEN is not defined in .env!");
-}
-
 exports.auth = (req, res, next) => {
   const authHeader = req.header("x-auth-token");
   if (!authHeader)
@@ -15,6 +10,12 @@ exports.auth = (req, res, next) => {
   const token = authHeader.startsWith("Bearer ")
     ? authHeader.slice(7).trim()
     : authHeader;
+
+  const jwt_secret = process.env.JWT_TOKEN;
+  
+  if (!process.env.JWT_TOKEN) {
+    throw new Error("JWT_TOKEN is not defined in .env!");
+  }
 
   try {
     const decoded = jwt.verify(token, jwt_secret);

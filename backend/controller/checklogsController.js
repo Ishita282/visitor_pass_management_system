@@ -10,7 +10,7 @@ exports.checkIn = async (req, res) => {
       if (!pass)
         return res.status(404).json({ msg: "Pass not found" });
 
-      const log = new CheckLog({
+      const log = new checklogsModel({
         visitor: pass.visitor,
         pass: pass._id,
         checkInTime: new Date(),
@@ -25,7 +25,11 @@ exports.checkIn = async (req, res) => {
       });
 
     } catch (error) {
-      res.status(500).json({ msg: "Server error" });
+        console.error("Error in createVisitor:", err.message);
+  res.status(500).json({
+    msg: "Failed to create visitor",
+    error: err.message
+  });
     }
   }
 
@@ -51,6 +55,10 @@ exports.checkOut = async (req, res) => {
       });
 
     } catch (error) {
-      res.status(500).json({ msg: "Server error" });
+        console.error("Error in createVisitor:", err.message);
+  res.status(500).json({
+    msg: "Failed to create visitor",
+    error: err.message
+  });
     }
   }

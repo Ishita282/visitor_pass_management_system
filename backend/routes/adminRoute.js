@@ -1,12 +1,11 @@
 const express = require("express");
-const {
-  getAllUsers,
-} = require("../controller/adminController");
+const { getAllUsers } = require("../controller/adminController");
 const { auth, permit } = require("../middleware/authMiddleware");
+const { body, param } = require("express-validator");
+const { validate } = require("../middleware/validator");
 
 const router = express();
 router.use(express.json());
-
 
 /*
 Route: /users
@@ -16,10 +15,6 @@ Access: Admin
 Parameter: none
 */
 
-router.get(
-  "/all",
-  //  auth, permit("admin"),
-  getAllUsers,
-);
+router.get("/all", auth, permit("admin"), getAllUsers);
 
-module.exports = router
+module.exports = router;
