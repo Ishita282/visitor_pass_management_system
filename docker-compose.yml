@@ -6,7 +6,7 @@ services:
       context: ./backend
     container_name: backend
     ports:
-      - "5000:5000"
+      - "4000:4000"
     environment:
       - NODE_ENV=development
     volumes:

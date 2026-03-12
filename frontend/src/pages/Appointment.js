@@ -21,7 +21,7 @@ function Appointments() {
   const fetchVisitors = async () => {
     try {
       const res = await API_AUTH.get("/visitors");
-      setVisitors(res.data || []);
+      setVisitors(res.data.visitors || []);
     } catch (error) {
       console.error(error);
       alert("Failed to load visitors");
@@ -31,7 +31,7 @@ function Appointments() {
   const fetchAppointments = async () => {
     try {
       const res = await API_AUTH.get("/appointments");
-      setAppointments(res.data || []);
+      setAppointments(res.data.appointments || []);
     } catch (error) {
       console.error(error);
       alert("Failed to load appointments");

@@ -20,11 +20,8 @@ const fetchVisitors = async () => {
   try {
     const res = await API_AUTH.get("/visitors");
 
-    const visitorArray = Array.isArray(res.data.visitors)
-      ? res.data.visitors
-      : [];
+    setVisitors(res.data.visitors || []);
 
-    setVisitors(visitorArray);
   } catch (error) {
     console.error(error);
     alert("Failed to load visitors");
@@ -96,8 +93,7 @@ const fetchVisitors = async () => {
 
       <h2>Visitor List</h2>
 
-      {Array.isArray(visitors) &&
-        visitors.map((v) => (
+      {visitors.map((v) => (
           <div className="visitors" key={v._id}>
             <p>
               <strong>VisitorId: </strong>

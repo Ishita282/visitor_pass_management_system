@@ -31,7 +31,7 @@ exports.dashboardStats = async (req, res) => {
       pendingAppointments
     });
 
-  } catch (error) {
+  } catch (err) {
       console.error("Error in dashboard stats:", err.message);
   res.status(500).json({
     msg: "Failed to dashboard stats",
@@ -76,7 +76,7 @@ exports.searchLogs = async (req, res) => {
 
     res.json(logs);
 
-  } catch (error) {
+  } catch (err) {
       console.error("Error in search logs:", err.message);
   res.status(500).json({
     msg: "Failed to search logs",
@@ -116,7 +116,7 @@ exports.exportLogs = async (req, res) => {
 
     res.status(400).json({ msg: "Invalid format" });
 
-  } catch (error) {
+  } catch (err) {
       console.error("Error in export logs:", err.message);
   res.status(500).json({
     msg: "Failed to export logs",

@@ -1,7 +1,11 @@
 const sendEmail = require("../notification/sendEmail");
 const sendSMS = require("../notification/sendSMS");
 
-exports.appointmentApproved = async (email, name, date, phone) => {
+const isValidPhone = (phone) => {
+  return phone && /^[0-9]{10}$/.test(phone);
+};
+
+exports.appointmentApproved = async (email, phone, name, date) => {
   const subject = "Appointment Approved";
 
   const text = `
@@ -17,10 +21,11 @@ Thank you.
 `;
 
   await sendEmail(email, subject, text);
-  if (phone) await sendSMS(phone, text);
-};
+  if (isValidPhone(phone)) {
+    await sendSMS(phone, text);
+  }};
 
-exports.appointmentRejected = async (email, name, phone) => {
+exports.appointmentRejected = async (email, phone, name) => {
   const subject = "Appointment Rejected";
 
   const text = `
@@ -34,10 +39,11 @@ Thank you.
 `;
 
   await sendEmail(email, subject, text);
-  if (phone) await sendSMS(phone, text);
-};
+  if (isValidPhone(phone)) {
+    await sendSMS(phone, text);
+  }};
 
-exports.passGenerated = async (email, name, passId, phone) => {
+exports.passGenerated = async (email, phone, name, passId) => {
   const subject = "Visitor Pass Generated";
 
   const text = `
@@ -53,5 +59,6 @@ Thank you.
 `;
 
   await sendEmail(email, subject, text);
-  if (phone) await sendSMS(phone, text);
-};
+  if (isValidPhone(phone)) {
+    await sendSMS(phone, text);
+  }};

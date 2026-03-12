@@ -1,5 +1,4 @@
 const checklogsModel = require("../model/checklogsModel");
-const passModel = require("../model/passModel");
 const generateOTP = require("../config/otp");
 const sendSMS = require("../notification/sendSMS");
 
@@ -8,7 +7,7 @@ exports.checkIn = async (req, res) => {
     const { passId } = req.params;
     const { otp } = req.body;
 
-    const log = await CheckLog.findById(passId).populate("visitor");
+    const log = await checklogsModel.findById(passId).populate("visitor");
     if (!log) return res.status(404).json({ msg: "Check log not found" });
 
     if (!otp || log.otp !== otp) {
@@ -25,7 +24,7 @@ exports.checkIn = async (req, res) => {
     await log.save();
 
     res.json({ msg: "Visitor checked in successfully" });
-  } catch (error) {
+  } catch (err) {
     console.error("Error in check in:", err.message);
     res.status(500).json({
       msg: "Failed to check in",
@@ -51,7 +50,7 @@ exports.checkOut = async (req, res) => {
       message: "Visitor checked out",
       log,
     });
-  } catch (error) {
+  } catch (err) {
     console.error("Error in check out:", err.message);
     res.status(500).json({
       msg: "Failed to check out",

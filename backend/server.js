@@ -1,5 +1,4 @@
 const express = require("express");
-require('dotenv').config();
 const cors = require("cors")
 const dbConnection = require("./config/db");
 const authRoutes = require("./routes/authRoute");
@@ -10,6 +9,8 @@ const passes = require("./routes/passRoute");
 const checklogs = require("./routes/checklogsRoute");
 const dashboard = require("./routes/dashboardRoute");
 
+require('dotenv').config();
+
 dbConnection();
 
 const app = express();
@@ -17,11 +18,6 @@ const app = express();
 app.use(express.json());
 
 app.use(cors());
-
-app.use((req, res, next) => {
-  console.log(`Request received: ${req.method} ${req.url}`);
-  next();
-});
 
 app.get("/", (req, res) => {
   res.status(200).send("welcome...");
