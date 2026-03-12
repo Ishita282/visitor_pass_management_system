@@ -1,64 +1,86 @@
 const checklogsModel = require("../model/checklogsModel");
 const passModel = require("../model/passModel");
-
+const generateOTP = require("../config/otp");
+const sendSMS = require("../notification/sendSMS");
 
 exports.checkIn = async (req, res) => {
-    try {
+  try {
+    const { passId } = req.params;
+    const { otp } = req.body;
 
-      const pass = await passModel.findById(req.params.passId);
+    const log = await CheckLog.findById(passId).populate("visitor");
+    if (!log) return res.status(404).json({ msg: "Check log not found" });
 
-      if (!pass)
-        return res.status(404).json({ msg: "Pass not found" });
-
-      const log = new checklogsModel({
-        visitor: pass.visitor,
-        pass: pass._id,
-        checkInTime: new Date(),
-        scannedBy: req.user.id
-      });
-
-      await log.save();
-
-      res.json({
-        message: "Visitor checked in",
-        log
-      });
-
-    } catch (error) {
-        console.error("Error in createVisitor:", err.message);
-  res.status(500).json({
-    msg: "Failed to create visitor",
-    error: err.message
-  });
+    if (!otp || log.otp !== otp) {
+      return res.status(400).json({ msg: "Invalid OTP" });
     }
-  }
 
+    if (log.otpExpires < new Date()) {
+      return res.status(400).json({ msg: "OTP expired" });
+    }
+
+    log.checkInTime = new Date();
+    log.otp = null;
+    log.otpExpires = null;
+    await log.save();
+
+    res.json({ msg: "Visitor checked in successfully" });
+  } catch (error) {
+    console.error("Error in check in:", err.message);
+    res.status(500).json({
+      msg: "Failed to check in",
+      error: err.message,
+    });
+  }
+};
 
 exports.checkOut = async (req, res) => {
-    try {
+  try {
+    const log = await checklogsModel.findOne({
+      pass: req.params.passId,
+      checkOutTime: null,
+    });
 
-      const log = await checklogsModel.findOne({
-        pass: req.params.passId,
-        checkOutTime: null
-      });
+    if (!log) return res.status(404).json({ msg: "Check-in record not found" });
 
-      if (!log)
-        return res.status(404).json({ msg: "Check-in record not found" });
+    log.checkOutTime = new Date();
 
-      log.checkOutTime = new Date();
+    await log.save();
 
-      await log.save();
-
-      res.json({
-        message: "Visitor checked out",
-        log
-      });
-
-    } catch (error) {
-        console.error("Error in createVisitor:", err.message);
-  res.status(500).json({
-    msg: "Failed to create visitor",
-    error: err.message
-  });
-    }
+    res.json({
+      message: "Visitor checked out",
+      log,
+    });
+  } catch (error) {
+    console.error("Error in check out:", err.message);
+    res.status(500).json({
+      msg: "Failed to check out",
+      error: err.message,
+    });
   }
+};
+
+exports.sendOTP = async (req, res) => {
+  try {
+    const { passId } = req.params;
+
+    const log = await checklogsModel.findById(passId).populate("visitor");
+    if (!log) return res.status(404).json({ msg: "Check log not found" });
+
+    const otp = generateOTP();
+    log.otp = otp;
+    log.otpExpires = new Date(Date.now() + 5 * 60 * 1000);
+    await log.save();
+
+    await sendSMS(log.visitor.phone, `Your check-in OTP is ${otp}`);
+
+    res.json({ msg: "OTP sent to visitor phone" });
+  } catch (err) {
+    console.error("Error in sending OTP:", err.message);
+    res.status(500).json({
+      msg: "Failed to send OTP",
+      error: err.message,
+    });
+  }
+};
+

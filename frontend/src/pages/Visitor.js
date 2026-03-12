@@ -16,15 +16,20 @@ function Visitors() {
     fetchVisitors();
   }, []);
 
-  const fetchVisitors = async () => {
-    try {
-      const res = await API_AUTH.get("/visitors");
+const fetchVisitors = async () => {
+  try {
+    const res = await API_AUTH.get("/visitors");
 
-      setVisitors(res.data.visitors || []);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    const visitorArray = Array.isArray(res.data.visitors)
+      ? res.data.visitors
+      : [];
+
+    setVisitors(visitorArray);
+  } catch (error) {
+    console.error(error);
+    alert("Failed to load visitors");
+  }
+};
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -91,14 +96,27 @@ function Visitors() {
 
       <h2>Visitor List</h2>
 
-      {visitors.map((v) => (
-        <div className="visitors" key={v._id}>
-          <p><strong>VisitorId: </strong>{v._id} </p>
-          <p><strong>Name: </strong>{v.name}</p>
-          <p><strong>Phone: </strong>{v.phone}</p>
-          <p><strong>Purpose: </strong>{v.purpose}</p>
-        </div>
-      ))}
+      {Array.isArray(visitors) &&
+        visitors.map((v) => (
+          <div className="visitors" key={v._id}>
+            <p>
+              <strong>VisitorId: </strong>
+              {v._id}{" "}
+            </p>
+            <p>
+              <strong>Name: </strong>
+              {v.name}
+            </p>
+            <p>
+              <strong>Phone: </strong>
+              {v.phone}
+            </p>
+            <p>
+              <strong>Purpose: </strong>
+              {v.purpose}
+            </p>
+          </div>
+        ))}
     </div>
   );
 }

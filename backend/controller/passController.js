@@ -75,10 +75,11 @@ exports.generateBadge = async (req, res) => {
 
     doc.end();
 
-  } catch (error) {
+  } catch (err) {
+    console.error("Error in generating badge:", err.message);
     res.status(500).json({
-      message: "Server error",
-      error: error.message,
+      msg: "Failed to generating badge",
+      error: err.message,
     });
   }
 };

@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { checkIn, checkOut } = require("../controller/checklogsController");
+const { checkIn, checkOut, sendOTP } = require("../controller/checklogsController");
 const { auth, permit } = require("../middleware/authMiddleware");
 const { body, param } = require("express-validator");
 const { validate } = require("../middleware/validator");
+router.use(express.json());
+
 
 /*
 Route: /checklogs/checkin/{passId}
@@ -22,7 +24,6 @@ router.post(
   checkIn
 );
 
-
 /*
 Route: /checklogs/checkout/{passId}
 Method: POST
@@ -39,5 +40,15 @@ router.post(
   validate,
   checkOut
 );
+
+/*
+Route: /checklogs/send-otp/{passId}
+Method: POST
+Description: Send OTP 
+Access: security, admin
+Parameter: passId
+*/
+
+router.post("/send-otp/:passId", auth, permit("security", "admin"), sendOTP);
 
 module.exports = router;

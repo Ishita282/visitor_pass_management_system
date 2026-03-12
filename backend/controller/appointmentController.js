@@ -24,13 +24,12 @@ exports.createAppointment = async (req, res) => {
       appointmentId: appointment._id,
       appointment,
     });
-
   } catch (err) {
-      console.error("Error in createVisitor:", err.message);
-  res.status(500).json({
-    msg: "Failed to create visitor",
-    error: err.message
-  });
+    console.error("Error in create Appointment:", err.message);
+    res.status(500).json({
+      msg: "Failed to create Appointment",
+      error: err.message,
+    });
   }
 };
 
@@ -42,13 +41,12 @@ exports.getAllAppointment = async (req, res) => {
       .populate("host", "name email");
 
     res.json(appointments);
-
   } catch (err) {
-      console.error("Error in createVisitor:", err.message);
-  res.status(500).json({
-    msg: "Failed to create visitor",
-    error: err.message
-  });
+    console.error("Error in get all appointments:", err.message);
+    res.status(500).json({
+      msg: "Failed to get all appointments",
+      error: err.message,
+    });
   }
 };
 
@@ -75,14 +73,16 @@ exports.updateAppointmentStatusById = async (req, res) => {
       await notification.appointmentApproved(
         appointment.visitor.email,
         appointment.visitor.name,
-        appointment.date
+        appointment.date,
+        appointment.visitor.phone,
       );
     }
 
     if (status === "rejected") {
       await notification.appointmentRejected(
         appointment.visitor.email,
-        appointment.visitor.name
+        appointment.visitor.name,
+        appointment.visitor.phone,
       );
     }
 
@@ -90,12 +90,11 @@ exports.updateAppointmentStatusById = async (req, res) => {
       msg: `Appointment ${status}`,
       appointment,
     });
-
   } catch (err) {
-      console.error("Error in createVisitor:", err.message);
-  res.status(500).json({
-    msg: "Failed to create visitor",
-    error: err.message
-  });
+    console.error("Error in update appointment status:", err.message);
+    res.status(500).json({
+      msg: "Failed to update appointment status",
+      error: err.message,
+    });
   }
 };

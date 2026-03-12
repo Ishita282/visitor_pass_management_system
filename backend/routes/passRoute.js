@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { qrPassGenerator } = require("../controller/passController");
-const { body, param } = require("express-validator");
+const { generateBadge } = require("../controller/passController");
+const { param } = require("express-validator");
 const { validate } = require("../middleware/validator");
 const { auth, permit } = require("../middleware/authMiddleware");
+router.use(express.json());
 
 /*
 Route: /pass/generate/{appointmentId}
@@ -21,7 +22,7 @@ router.post(
     param("appointmentId").notEmpty().withMessage("Appointment ID required"),
   ],
   validate,
-  qrPassGenerator
+  generateBadge
 );
 
 module.exports = router;

@@ -2,7 +2,6 @@ const checklogsModel = require("../model/checklogsModel");
 const appointmentModel = require("../model/appointmentModel");
 const visitorModel = require("../model/visitorModel");
 
-// Dashboard Stats
 exports.dashboardStats = async (req, res) => {
   try {
 
@@ -33,9 +32,9 @@ exports.dashboardStats = async (req, res) => {
     });
 
   } catch (error) {
-      console.error("Error in createVisitor:", err.message);
+      console.error("Error in dashboard stats:", err.message);
   res.status(500).json({
-    msg: "Failed to create visitor",
+    msg: "Failed to dashboard stats",
     error: err.message
   });
   }
@@ -43,7 +42,6 @@ exports.dashboardStats = async (req, res) => {
 
 
 
-// Search & Filter Logs
 exports.searchLogs = async (req, res) => {
   try {
 
@@ -51,7 +49,6 @@ exports.searchLogs = async (req, res) => {
 
     let filter = {};
 
-    // Filter by date
     if (startDate && endDate) {
       filter.checkInTime = {
         $gte: new Date(startDate),
@@ -59,7 +56,6 @@ exports.searchLogs = async (req, res) => {
       };
     }
 
-    // Filter by status
     if (status === "active") {
       filter.checkOutTime = null;
     }
@@ -72,7 +68,6 @@ exports.searchLogs = async (req, res) => {
       .find(filter)
       .populate("visitor", "name email phone");
 
-    // Search by visitor name
     if (name) {
       logs = logs.filter(log =>
         log.visitor.name.toLowerCase().includes(name.toLowerCase())
@@ -82,9 +77,9 @@ exports.searchLogs = async (req, res) => {
     res.json(logs);
 
   } catch (error) {
-      console.error("Error in createVisitor:", err.message);
+      console.error("Error in search logs:", err.message);
   res.status(500).json({
-    msg: "Failed to create visitor",
+    msg: "Failed to search logs",
     error: err.message
   });
   }
@@ -92,7 +87,6 @@ exports.searchLogs = async (req, res) => {
 
 
 
-// Export Logs (CSV or JSON)
 exports.exportLogs = async (req, res) => {
   try {
 
@@ -123,9 +117,9 @@ exports.exportLogs = async (req, res) => {
     res.status(400).json({ msg: "Invalid format" });
 
   } catch (error) {
-      console.error("Error in createVisitor:", err.message);
+      console.error("Error in export logs:", err.message);
   res.status(500).json({
-    msg: "Failed to create visitor",
+    msg: "Failed to export logs",
     error: err.message
   });
   }

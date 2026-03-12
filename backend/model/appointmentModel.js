@@ -14,13 +14,19 @@ const appointmentSchema = new Schema(
       ref: "User",
       required: true,
     },
-    date: { type: Date, required: true },
+    date: {
+      type: Date,
+      required: true,
+    },
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
-    createdAt: { type: Date, default: Date.now },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true },
 );

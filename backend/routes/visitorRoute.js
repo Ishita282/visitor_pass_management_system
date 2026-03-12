@@ -7,7 +7,7 @@ const {
   deleteVisitorsById,
 } = require("../controller/visitorController");
 const { auth, permit } = require("../middleware/authMiddleware");
-const { body, param } = require("express-validator");
+const { body } = require("express-validator");
 const { validate } = require("../middleware/validator");
 
 const router = express();
@@ -21,8 +21,6 @@ Access: PUBLIC
 Parameter: none
 */
 
-const { body } = require("express-validator");
-const { validate } = require("../middleware/validator");
 
 router.post(
   "/",
@@ -34,6 +32,7 @@ router.post(
   validate,
   createVisitor
 );
+
 /*
 Route: /visitors
 Method: GET

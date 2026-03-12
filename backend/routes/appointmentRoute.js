@@ -6,8 +6,9 @@ const {
   updateAppointmentStatusById,
 } = require("../controller/appointmentController");
 const { auth, permit } = require("../middleware/authMiddleware");
-const { body, param } = require("express-validator");
+const { body } = require("express-validator");
 const { validate } = require("../middleware/validator");
+router.use(express.json());
 
 /*
 Route: /appointment

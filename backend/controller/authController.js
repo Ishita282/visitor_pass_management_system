@@ -38,10 +38,11 @@ exports.signup = async (req, res) => {
       token,
       user: { id: newUser._id, name, email, role: role || "visitor" },
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("Error in signup:", err.message);
     res.status(500).json({
-      success: false,
-      msg: "Server Error",
+      msg: "Failed to signup",
+      error: err.message,
     });
   }
 };
@@ -74,9 +75,11 @@ exports.login = async (req, res) => {
       success: true,
       user: { id: user._id, name: user.name, email, role: user.role },
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("Error in login:", err.message);
     res.status(500).json({
-      msg: `Server Error ${error}`,
+      msg: "Failed to login",
+      error: err.message,
     });
   }
 };

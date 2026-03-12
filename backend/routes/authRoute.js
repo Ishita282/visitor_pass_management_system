@@ -3,7 +3,7 @@ const {
   signup,
   login
 } = require("../controller/authController");
-const { body, param } = require("express-validator");
+const { body } = require("express-validator");
 const { validate } = require("../middleware/validator");
 
 const router = express();

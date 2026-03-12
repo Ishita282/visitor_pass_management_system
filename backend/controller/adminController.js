@@ -10,10 +10,12 @@ exports.getAllUsers = async (req, res) => {
       success: true,
       users,
     });
-  } catch (error) {
-    res.status(400).json({
-      msg: "Server error",
-      error: error.message,
+  } catch (err) {
+    console.error("Error in getting users:", err.message);
+    res.status(500).json({
+      msg: "Failed to getting users",
+      error: err.message,
     });
   }
+
 };

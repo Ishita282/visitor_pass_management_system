@@ -27,11 +27,11 @@ exports.createVisitor = async (req, res) => {
       message: "Visitor registered successfully",
       visitor,
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("Error in create visitor:", err.message);
     res.status(500).json({
-      success: false,
-      msg: "Server Error",
-      error: error.message,
+      msg: "Failed to create visitor",
+      error: err.message,
     });
   }
 };
@@ -50,11 +50,11 @@ exports.getAllVisitors = async (req, res) => {
       success: true,
       visitors: allVisitors,
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("Error in getting all visitors:", err.message);
     res.status(500).json({
-      success: false,
-      msg: "Server Error",
-      error: error.message,
+      msg: "Failed to getting all visitors",
+      error: err.message,
     });
   }
 };
@@ -79,11 +79,11 @@ exports.getVisitorsById = async (req, res) => {
       success: true,
       visitor: visitor,
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("Error in getting visitor by id:", err.message);
     res.status(500).json({
-      success: false,
-      msg: "Server Error",
-      error: error.message,
+      msg: "Failed to getting visitor by id",
+      error: err.message,
     });
   }
 };
@@ -117,11 +117,11 @@ exports.updateVisitorsById = async (req, res) => {
       msg: "Visitor updated successfully",
       visitor: updatedVisitor,
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("Error in update visitor:", err.message);
     res.status(500).json({
-      success: false,
-      msg: "Server Error",
-      error: error.message,
+      msg: "Failed to update visitor",
+      error: err.message,
     });
   }
 };
@@ -150,11 +150,11 @@ exports.deleteVisitorsById = async (req, res) => {
       success: true,
       msg: "Visitor deleted successfully",
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("Error in delete visitor:", err.message);
     res.status(500).json({
-      success: false,
-      msg: "Server Error",
-      error: error.message,
+      msg: "Failed to delete visitor",
+      error: err.message,
     });
   }
 };

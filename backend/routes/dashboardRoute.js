@@ -5,8 +5,6 @@ const {
   exportLogs,
 } = require("../controller/dashboardController");
 const { auth, permit } = require("../middleware/authMiddleware");
-const { body, param } = require("express-validator");
-const { validate } = require("../middleware/validator");
 
 const router = express();
 router.use(express.json());
