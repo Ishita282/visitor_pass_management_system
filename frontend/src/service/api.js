@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const BASE_URL = "https://visitor-pass-management-system-wnl4.onrender.com";
-const BASE_URL = `${process.env.BASE_URL}`;
+const BASE_URL = "https://visitor-pass-management-system-wnl4.onrender.com";
+// const BASE_URL = `${process.env.BASE_URL}`;
 // const BASE_URL = "http://localhost:4000";
 
 export const API_AUTH = axios.create({ baseURL: BASE_URL });
