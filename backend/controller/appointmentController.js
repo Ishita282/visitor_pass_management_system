@@ -8,28 +8,24 @@ exports.createAppointment = async (req, res) => {
 
     const visitor = await visitorModel.findById(visitorId);
     if (!visitor) {
-      return res.status(404).json({ msg: "Visitor not found" });
+      return res.status(404).json({ message: "Visitor not found" });
     }
 
-    const appointment = new appointmentModel({
+    const newAppointment = new appointmentModel({
       visitor: visitorId,
       host: hostId,
-      date,
+      date: date,
     });
 
-    await appointment.save();
+    await newAppointment.save();
 
     res.status(201).json({
-      msg: "Appointment created",
-      appointmentId: appointment._id,
-      appointment,
+      message: "Appointment created successfully",
+      appointment: newAppointment,
     });
-  } catch (err) {
-    console.error("Error in create Appointment:", err.message);
-    res.status(500).json({
-      msg: "Failed to create Appointment",
-      error: err.message,
-    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -37,16 +33,15 @@ exports.getAllAppointment = async (req, res) => {
   try {
     const appointments = await appointmentModel
       .find()
-      .populate("visitor", "name phone email")
-      .populate("host", "name email");
-
-    res.json(appointments);
-  } catch (err) {
-    console.error("Error in get all appointments:", err.message);
-    res.status(500).json({
-      msg: "Failed to get all appointments",
-      error: err.message,
+      .populate("visitor", "name")
+      .populate("host", "name");
+    res.status(200).json({
+      success: true,
+      appointments,
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -54,21 +49,15 @@ exports.updateAppointmentStatusById = async (req, res) => {
   try {
     const { status } = req.body;
 
-    if (!["approved", "rejected"].includes(status)) {
-      return res.status(400).json({ msg: "Invalid status" });
+    if (status !== "approved" && status !== "rejected") {
+      return res.status(400).json({ message: "Invalid status" });
     }
-
-    const appointment = await appointmentModel
-      .findById(req.params.id)
-      .populate("visitor");
-
+    const appointment = await appointmentModel.findById(req.params.id);
     if (!appointment) {
-      return res.status(404).json({ msg: "Appointment not found" });
+      return res.status(404).json({ message: "Appointment not found" });
     }
-
     appointment.status = status;
     await appointment.save();
-
     if (status === "approved") {
       await notification.appointmentApproved(
         appointment.visitor.email,
@@ -77,7 +66,6 @@ exports.updateAppointmentStatusById = async (req, res) => {
         appointment.visitor.phone,
       );
     }
-
     if (status === "rejected") {
       await notification.appointmentRejected(
         appointment.visitor.email,
@@ -85,16 +73,12 @@ exports.updateAppointmentStatusById = async (req, res) => {
         appointment.visitor.phone,
       );
     }
-
-    res.json({
-      msg: `Appointment ${status}`,
+    res.status(200).json({
+      message: "Appointment status updated",
       appointment,
     });
-  } catch (err) {
-    console.error("Error in update appointment status:", err.message);
-    res.status(500).json({
-      msg: "Failed to update appointment status",
-      error: err.message,
-    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };

@@ -11,71 +11,68 @@ function Appointments() {
     date: "",
   });
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    fetchVisitors();
-    fetchAppointments();
+    getVisitors();
+    getAppointments();
   }, []);
 
-  const fetchVisitors = async () => {
+  const getVisitors = async () => {
     try {
       const res = await API_AUTH.get("/visitors");
       setVisitors(res.data.visitors || []);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to load visitors");
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  const fetchAppointments = async () => {
+  const getAppointments = async () => {
     try {
       const res = await API_AUTH.get("/appointments");
       setAppointments(res.data.appointments || []);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to load appointments");
+    } catch (err) {
+      console.log(err);
     }
   };
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!form.visitorId) newErrors.visitorId = "Visitor is required";
-    if (!form.hostId) newErrors.hostId = "Host ID is required";
-    if (!form.date) newErrors.date = "Date and time are required";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
 
+    if (!form.visitorId || !form.hostId || !form.date) {
+      alert("Please fill all fields");
+      return;
+    }
     setLoading(true);
 
     try {
       await API_AUTH.post("/appointments", form);
-      fetchAppointments();
-      setForm({ visitorId: "", hostId: "", date: "" });
-    } catch (error) {
-      alert(error.response?.data?.msg || "Failed to create appointment");
-    } finally {
-      setLoading(false);
+      getAppointments();
+
+      setForm({
+        visitorId: "",
+        hostId: "",
+        date: "",
+      });
+    } catch (err) {
+      console.log(err);
+      alert("Failed to create appointment");
     }
+    setLoading(false);
   };
 
   const updateStatus = async (id, status) => {
     try {
       await API_AUTH.patch(`/appointments/${id}/status`, { status });
-      fetchAppointments();
-    } catch (error) {
-      alert("Failed to update appointment status");
+      getAppointments();
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -84,44 +81,32 @@ function Appointments() {
       <h1>Appointments</h1>
 
       <form onSubmit={handleSubmit} className="form">
-        <div className="form-group">
-          <label>Visitor</label>
-          <select
-            name="visitorId"
-            value={form.visitorId}
-            onChange={handleChange}
-          >
-            <option value="">Select Visitor</option>
-            {visitors.map((v) => (
-              <option key={v._id} value={v._id}>
-                {v.name}
-              </option>
-            ))}
-          </select>
-          {errors.visitorId && <span className="error">{errors.visitorId}</span>}
-        </div>
+        <label>Visitor</label>
+        <select name="visitorId" value={form.visitorId} onChange={handleChange}>
+          <option value="">Select Visitor</option>
 
-        <div className="form-group">
-          <label>Host Employee ID</label>
-          <input
-            type="text"
-            name="hostId"
-            value={form.hostId}
-            onChange={handleChange}
-          />
-          {errors.hostId && <span className="error">{errors.hostId}</span>}
-        </div>
+          {visitors.map((v) => (
+            <option key={v._id} value={v._id}>
+              {v.name}
+            </option>
+          ))}
+        </select>
 
-        <div className="form-group">
-          <label>Date & Time</label>
-          <input
-            type="datetime-local"
-            name="date"
-            value={form.date}
-            onChange={handleChange}
-          />
-          {errors.date && <span className="error">{errors.date}</span>}
-        </div>
+        <label>Host ID</label>
+        <input
+          type="text"
+          name="hostId"
+          value={form.hostId}
+          onChange={handleChange}
+        />
+
+        <label>Date</label>
+        <input
+          type="datetime-local"
+          name="date"
+          value={form.date}
+          onChange={handleChange}
+        />
 
         <button disabled={loading}>
           {loading ? "Creating..." : "Create Appointment"}
@@ -129,6 +114,7 @@ function Appointments() {
       </form>
 
       <h2>Appointment List</h2>
+
       {appointments.length === 0 && <p>No appointments found</p>}
 
       <div className="appointments-list">
@@ -145,10 +131,11 @@ function Appointments() {
             </p>
 
             {a.status === "pending" && (
-              <div className="action-buttons">
+              <div>
                 <button onClick={() => updateStatus(a._id, "approved")}>
                   Approve
                 </button>
+
                 <button onClick={() => updateStatus(a._id, "rejected")}>
                   Reject
                 </button>

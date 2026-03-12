@@ -6,7 +6,7 @@ const {
 const { body } = require("express-validator");
 const { validate } = require("../middleware/validator");
 
-const router = express();
+const router = express.Router();
 router.use(express.json());
 
 /*

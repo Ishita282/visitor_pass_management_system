@@ -1,20 +1,15 @@
-/* styleNav.css */
-
-/* Navbar container */
 .navbar {
   display: flex;
-  justify-content: center; /* center links horizontally */
-  background-color: #007bff; /* blue background */
-  padding: 12px 0;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  padding: 10px 0;
+  background: white;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Links inside Navbar */
 .navbar a {
-  color: white;
+  color: #000000;
   text-decoration: none;
   margin: 0 15px;
   font-weight: bold;
@@ -22,13 +17,13 @@
   transition: color 0.2s;
 }
 
-/* Hover effect */
-.navbar a:hover {
-  color: #ffdd57; /* gold-ish highlight */
-  text-decoration: underline;
+.navbar a:hover,
+.navbar a.active {
+  color: #f05151;
+  transition: color 0.3s;
 }
 
-/* Active link styling (optional if using react-router-dom NavLink) */
-.navbar a.active {
-  border-bottom: 2px solid #ffdd57;
+.navbar a:link,
+.navbar a:visited {
+  border-bottom: 2px solid #f05151;
 }

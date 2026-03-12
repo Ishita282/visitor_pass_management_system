@@ -2,15 +2,15 @@ const express = require("express");
 const {
   createVisitor,
   getAllVisitors,
-  getVisitorsById,
-  updateVisitorsById,
-  deleteVisitorsById,
+  getVisitorById,
+  updateVisitorById,
+  deleteVisitorById,
 } = require("../controller/visitorController");
 const { auth, permit } = require("../middleware/authMiddleware");
 const { body } = require("express-validator");
 const { validate } = require("../middleware/validator");
 
-const router = express();
+const router = express.Router();
 router.use(express.json());
 
 /*
@@ -51,7 +51,7 @@ Access: PUBLIC
 Parameter: id
 */
 
-router.get("/:id", auth, getVisitorsById);
+router.get("/:id", auth, getVisitorById);
 
 /*
 Route: /visitors/{id}
@@ -61,7 +61,7 @@ Access: VISITOR
 Parameter: id
 */
 
-router.put("/:id", auth, permit("admin", "security"), updateVisitorsById);
+router.put("/:id", auth, permit("admin", "security"), updateVisitorById);
 
 /*
 Route: /visitors/{id}
@@ -71,6 +71,6 @@ Access: PUBLIC
 Parameter: id
 */
 
-router.delete("/:id", auth, permit("admin", "security"), deleteVisitorsById);
+router.delete("/:id", auth, permit("admin", "security"), deleteVisitorById);
 
 module.exports = router;

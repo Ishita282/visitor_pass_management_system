@@ -2,7 +2,7 @@ const express = require("express");
 const { getAllUsers } = require("../controller/adminController");
 const { auth, permit } = require("../middleware/authMiddleware");
 
-const router = express();
+const router = express.Router();
 router.use(express.json());
 
 /*

@@ -6,7 +6,7 @@ const {
 } = require("../controller/dashboardController");
 const { auth, permit } = require("../middleware/authMiddleware");
 
-const router = express();
+const router = express.Router();
 router.use(express.json());
 
 /*

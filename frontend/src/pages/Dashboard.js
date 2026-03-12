@@ -3,35 +3,32 @@ import { API_AUTH } from "../service/api";
 import "./style.css";
 
 function Dashboard() {
-
   const [stats, setStats] = useState({
     totalVisitors: 0,
     activeVisitors: 0,
     checkedOut: 0,
-    pendingAppointments: 0
+    pendingAppointments: 0,
   });
 
   useEffect(() => {
-    fetchStats();
+    getStats();
   }, []);
 
-  const fetchStats = async () => {
+  const getStats = async () => {
     try {
       const res = await API_AUTH.get("/dashboard/stats");
       setStats(res.data);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
+      alert("Failed to load dashboard data");
     }
   };
 
   return (
-
     <div className="container">
-
       <h1>Admin Dashboard</h1>
 
       <div className="stats">
-
         <div className="stat-card">
           <h3>Total Visitors Today</h3>
           <h2>{stats.totalVisitors}</h2>
@@ -51,9 +48,7 @@ function Dashboard() {
           <h3>Pending Appointments</h3>
           <h2>{stats.pendingAppointments}</h2>
         </div>
-
       </div>
-
     </div>
   );
 }
