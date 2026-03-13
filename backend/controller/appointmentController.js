@@ -49,9 +49,6 @@ exports.updateAppointmentStatusById = async (req, res) => {
   try {
     const { status } = req.body;
 
-    if (status !== "approved" && status !== "rejected") {
-      return res.status(400).json({ message: "Invalid status" });
-    }
     const appointment = await appointmentModel.findById(req.params.id);
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
@@ -59,19 +56,10 @@ exports.updateAppointmentStatusById = async (req, res) => {
     appointment.status = status;
     await appointment.save();
     if (status === "approved") {
-      await notification.appointmentApproved(
-        appointment.visitor.email,
-        appointment.visitor.name,
-        appointment.date,
-        appointment.visitor.phone,
-      );
+      await notification.appointmentApproved(appointment.visitor.email);
     }
     if (status === "rejected") {
-      await notification.appointmentRejected(
-        appointment.visitor.email,
-        appointment.visitor.name,
-        appointment.visitor.phone,
-      );
+      await notification.appointmentRejected(appointment.visitor.email);
     }
     res.status(200).json({
       message: "Appointment status updated",

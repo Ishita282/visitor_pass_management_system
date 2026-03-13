@@ -71,8 +71,7 @@ exports.updateVisitorById = async (req, res) => {
   try {
     const visitor = await visitorModel.findByIdAndUpdate(
       req.params.id,
-      req.body,
-      { new: true },
+      req.body
     );
     if (!visitor) {
       return res.status(404).json({ message: "Visitor not found" });

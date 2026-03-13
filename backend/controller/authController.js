@@ -16,7 +16,7 @@ exports.signup = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role || "visitor",
+      role: role,
     });
     await newUser.save();
     const token = jwt.sign({ id: newUser._id, role: newUser.role }, jwtSecret, {

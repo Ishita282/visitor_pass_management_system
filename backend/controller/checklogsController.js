@@ -12,7 +12,6 @@ exports.sendOTP = async (req, res) => {
     }
     const otp = generateOTP();
     log.otp = otp;
-    log.otpExpires = new Date(Date.now() + 5 * 60 * 1000);
     await log.save();
     await sendSMS(log.visitor.phone, `Your check-in OTP is ${otp}`);
     res.status(200).json({
@@ -33,15 +32,8 @@ exports.checkIn = async (req, res) => {
     if (!log) {
       return res.status(404).json({ message: "Check log not found" });
     }
-    if (log.otp !== otp) {
-      return res.status(400).json({ message: "Invalid OTP" });
-    }
-    if (log.otpExpires < new Date()) {
-      return res.status(400).json({ message: "OTP expired" });
-    }
     log.checkInTime = new Date();
     log.otp = null;
-    log.otpExpires = null;
     await log.save();
     res.status(200).json({
       success: true,
@@ -57,12 +49,8 @@ exports.checkOut = async (req, res) => {
   try {
     const { passId } = req.params;
     const log = await checklogsModel.findOne({
-      pass: passId,
-      checkOutTime: null,
+      pass: passId
     });
-    if (!log) {
-      return res.status(404).json({ message: "Check-in record not found" });
-    }
     log.checkOutTime = new Date();
     await log.save();
     res.status(200).json({
