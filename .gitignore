@@ -1,2 +1,2 @@
 .env
-video/
+video/video/*.mp4 
