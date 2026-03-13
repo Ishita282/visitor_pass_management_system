@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { API_AUTH } from "../service/api";
+import "./style.css"
 
 function Visitors() {
   const [visitors, setVisitors] = useState([]);
