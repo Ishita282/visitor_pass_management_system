@@ -193,3 +193,15 @@ npm start
 
 - CheckLogs
     >> visitor (ref), pass (ref), checkInTime, checkOutTime
+
+
+## ScreenShots
+
+![signup](signup.png)
+![dashboard](dashboard.png)
+![visitor](visitor.png)
+![all_visitors](all_visitors.png)
+![appointment](appointment.png)
+![all_appointments](all_appointments.png)
+![pass](pass.png)
+![scan](scan.png)
