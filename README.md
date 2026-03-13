@@ -197,11 +197,11 @@ npm start
 
 ## ScreenShots
 
-![signup](signup.png)
-![dashboard](dashboard.png)
-![visitor](visitor.png)
-![all_visitors](all_visitors.png)
-![appointment](appointment.png)
-![all_appointments](all_appointments.png)
-![pass](pass.png)
-![scan](scan.png)
+![signup](./screenshots/signup.png)
+![dashboard](./screenshots/dashboard.png)
+![visitor](./screenshots/visitor.png)
+![all_visitors](./screenshots/all_visitors.png)
+![appointment](./screenshots/appointment.png)
+![all_appointments](./screenshots/all_appointments.png)
+![pass](./screenshots/pass.png)
+![scan](./screenshots/scan.png)
