@@ -11,7 +11,7 @@ exports.createVisitor = async (req, res) => {
     if (existingVisitor) {
       return res.status(400).json({ message: "Visitor already exists" });
     }
-    const visitor = new Visitor({
+    const visitor = new visitorModel({
       name,
       email,
       phone,

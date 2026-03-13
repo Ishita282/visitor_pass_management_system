@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   createAppointment,
-  getAllAppointment,
+  getAllAppointments,
   updateAppointmentStatusById,
 } = require("../controller/appointmentController");
 const { auth, permit } = require("../middleware/authMiddleware");
@@ -39,7 +39,7 @@ Access: admin, security
 Parameter: none
 */
 
-router.get("/", auth, permit("admin", "security"), getAllAppointment);
+router.get("/", auth, permit("admin", "security"), getAllAppointments);
 
 /*
 Route: /appointment/{id}/status

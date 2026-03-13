@@ -9,6 +9,7 @@ const {
 const { auth, permit } = require("../middleware/authMiddleware");
 const { body } = require("express-validator");
 const { validate } = require("../middleware/validator");
+const upload = require("../middleware/upload")
 
 const router = express.Router();
 router.use(express.json());
@@ -21,7 +22,6 @@ Access: PUBLIC
 Parameter: none
 */
 
-
 router.post(
   "/",
   [
@@ -30,6 +30,7 @@ router.post(
     body("phone").notEmpty().withMessage("Phone required"),
   ],
   validate,
+  upload.single("photo"),
   createVisitor
 );
 
