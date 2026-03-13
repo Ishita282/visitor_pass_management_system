@@ -5,17 +5,13 @@ exports.createVisitor = async (req, res) => {
     const { name, email, phone, photo, host, purpose } = req.body;
 
     if (!name || !email || !phone || !host) {
-      return res
-        .status(400)
-        .json({ message: "Please provide all required fields" });
+      return res.status(400).json({ message: "Please provide all required fields" });
     }
-
     const existingVisitor = await visitorModel.findOne({ email });
     if (existingVisitor) {
       return res.status(400).json({ message: "Visitor already exists" });
     }
-
-    const visitor = new visitorModel({
+    const visitor = new Visitor({
       name,
       email,
       phone,
@@ -23,15 +19,13 @@ exports.createVisitor = async (req, res) => {
       host,
       purpose,
     });
-
     await visitor.save();
-
     res.status(201).json({
       message: "Visitor created successfully",
       visitor,
     });
   } catch (err) {
-    console.log(err);
+    console.error("Error creating visitor:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -39,13 +33,9 @@ exports.createVisitor = async (req, res) => {
 exports.getAllVisitors = async (req, res) => {
   try {
     const visitors = await visitorModel.find();
-
-    res.status(200).json({
-      success: true,
-      visitors,
-    });
+    res.status(200).json({ success: true, visitors });
   } catch (err) {
-    console.log(err);
+    console.error("Error fetching visitors:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -57,22 +47,17 @@ exports.getVisitorById = async (req, res) => {
     if (!visitor) {
       return res.status(404).json({ message: "Visitor not found" });
     }
-    res.status(200).json({
-      success: true,
-      visitor,
-    });
+
+    res.status(200).json({ success: true, visitor });
   } catch (err) {
-    console.log(err);
+    console.error("Error fetching visitor:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
 exports.updateVisitorById = async (req, res) => {
   try {
-    const visitor = await visitorModel.findByIdAndUpdate(
-      req.params.id,
-      req.body
-    );
+    const visitor = await visitorModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!visitor) {
       return res.status(404).json({ message: "Visitor not found" });
     }
@@ -82,7 +67,7 @@ exports.updateVisitorById = async (req, res) => {
       visitor,
     });
   } catch (err) {
-    console.log(err);
+    console.error("Error updating visitor:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -93,12 +78,13 @@ exports.deleteVisitorById = async (req, res) => {
     if (!visitor) {
       return res.status(404).json({ message: "Visitor not found" });
     }
+
     res.status(200).json({
       success: true,
       message: "Visitor deleted successfully",
     });
   } catch (err) {
-    console.log(err);
+    console.error("Error deleting visitor:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
